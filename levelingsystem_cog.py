@@ -10,9 +10,27 @@ time = datetime.time(hour=8, minute=30, tzinfo=utc)
 
 
 class LevelingSystem(commands.Cog):
+    """
+    This class creates a Leveling system that helps server owners create a trust system for hosting certain games.
+
+    Example: Let's say a server owner owns a minecraft server, and the server owner whitelists people to join.
+    The server owner wishes to only have trusted folks join their server, and possibly have them announce their own servers as well.
+    In this case, the server owner adds the UltimateLobbyAnnouncer bot. 
+    This bot only grants the lobby announcing command when the user has sent many messages, proving
+    to be a trustworthy person. Once they reach level 6, which is at exp lvl 50,000. Every message sent grants the user 100 exp. So in theory, it will take
+    500 messages to become a trustworthy individual.
+    This can create a heightened level of trust for server owners, who can feel at ease knowing that the people they add as a host for their server, or game 
+    lobby/whitelisted member can be a trusted individual.
+    """
     userandExp = {
         
     }
+    level1Exp = 5000
+    level2Exp = 10000
+    level3Exp = 20000
+    level4Exp = 30000
+    level5Exp = 50000
+
     
     def __init__ (self, bot):
         """
@@ -67,19 +85,39 @@ class LevelingSystem(commands.Cog):
         await ctx.send("Refreshing levels back to their previous levels...")
         author = ctx.author
         if author.name in self.userandExp:
-            if self.userandExp[ctx.author.name] < 200:
+            if self.userandExp[ctx.author.name] < self.level1Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 1").id))
-            elif self.userandExp[ctx.author.name] == 200:
+            elif self.userandExp[ctx.author.name] == self.level2Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 2").id))
-            elif self.userandExp[ctx.author.name] == 300:
+            elif self.userandExp[ctx.author.name] == self.level2Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 3").id))
-            elif self.userandExp[ctx.author.name] == 400:
+            elif self.userandExp[ctx.author.name] == self.level3Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 4").id))
-            elif self.userandExp[ctx.author.name] == 500:
+            elif self.userandExp[ctx.author.name] == self.level4Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 5").id))
-            elif self.userandExp[ctx.author.name] > 600:
+            elif self.userandExp[ctx.author.name] > self.level5Exp:
                 await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Hosts").id))
-        
+    
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        await member.send("Checking if you have previous levels from another server which has the UltimateLobbyAnnouncer Bot!")
+        if author.name in self.userandExp:
+            if self.userandExp[ctx.author.name] < self.level1Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 1").id))
+            elif self.userandExp[ctx.author.name] == self.level2Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 2").id))
+            elif self.userandExp[ctx.author.name] == self.level2Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 3").id))
+            elif self.userandExp[ctx.author.name] == self.level3Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 4").id))
+            elif self.userandExp[ctx.author.name] == self.level4Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 5").id))
+            elif self.userandExp[ctx.author.name] > self.level5Exp:
+                await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Hosts").id))
+        elif author.name not in self.userandExp:
+            await member.send("You are not in exp system! adding now...")
+            self.userandExp[member.name] = 0
+
     @commands.Cog.listener()
     async def on_message(self, message):
         '''
@@ -90,35 +128,35 @@ class LevelingSystem(commands.Cog):
         author = message.author
         for user in self.userandExp:
             if author.name in user and self.bot.user.name != author.name:
-                if self.userandExp[author.name] == 5000:
+                if self.userandExp[author.name] == self.level1Exp:
                     try:
                         await author.remove_roles(discord.Object(discord.utils.get(author.roles, name="Level 1").id))
                         await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 2").id))
                         await message.channel.send("You are now level 2!")
                     except Exception as e:
                         print(f"Error: {e}")
-                elif self.userandExp[author.name] == 10000:
+                elif self.userandExp[author.name] == self.level2Exp:
                     try:
                         await author.remove_roles(discord.Object(discord.utils.get(author.roles, name="Level 2").id))
                         await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 3").id))
                         await message.channel.send("You are now level 3!")
                     except Exception as e:
                         print(f"Error: {e}")
-                elif self.userandExp[author.name] == 20000:
+                elif self.userandExp[author.name] == self.level3Exp:
                     try:
                         await author.remove_roles(discord.Object(discord.utils.get(author.roles, name="Level 3").id))
                         await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 4").id))
                         await message.channel.send("You are now level 4!")
                     except Exception as e:
                         print(f"Error: {e}")
-                elif self.userandExp[author.name] == 30000:
+                elif self.userandExp[author.name] == self.level4Exp:
                     try:
                         await author.remove_roles(discord.Object(discord.utils.get(author.roles, name="Level 4").id))
                         await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Level 5").id))
                         await message.channel.send("You are now level 5!")
                     except Exception as e:
                         print(f"Error: {e}")
-                elif self.userandExp[author.name] == 50000:
+                elif self.userandExp[author.name] == self.level5Exp:
                     try:
                         await author.remove_roles(discord.Object(discord.utils.get(author.roles, name="Level 5").id))
                         await author.add_roles(discord.Object(discord.utils.get(author.guild.roles, name="Hosts").id))

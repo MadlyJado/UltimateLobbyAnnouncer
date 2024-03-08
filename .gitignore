@@ -1,0 +1,6 @@
+__pycache__/
+Pipfile
+Pipefile.lock
+apikey.py
+GoodHosts.txt
+exdict.pkl
